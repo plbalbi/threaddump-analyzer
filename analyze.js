@@ -45,7 +45,7 @@ function analyzeFileAndGetJson() {
         fileReader.readAsText(file);
         fileReader.onloadend = function(){
             var text = fileReader.result;
-            document.getElementById("GENERATED_JSON").innerHTML = generateJson(new Analyzer(text)).toString()
+            genrateD3Graph(generateJson(new Analyzer(text)))
         };
     }
 }
@@ -113,10 +113,10 @@ function generateJson(analyzer) {
     // flatten links array
     links = Array.prototype.concat.apply([], links)
 
-    return JSON.stringify({
+    return {
         nodes: nodes,
         links: links
-    })
+    }
 }
 
 

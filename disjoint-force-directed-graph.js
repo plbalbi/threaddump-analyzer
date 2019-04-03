@@ -1,4 +1,4 @@
-genrateD3Graph = () => {
+genrateD3Graph = (graphJson) => {
 
   const THREAD_ID = "THREAD"
   const SYNC_ID = "SYNC"
@@ -38,7 +38,7 @@ genrateD3Graph = () => {
   height = 680
   width = 680
 
-  data = JSON.parse(document.getElementById("GENERATED_JSON").innerHTML) 
+  data = graphJson
 
   chart = () => {
     const links = data.links.map(d => Object.create(d));
