@@ -31,7 +31,7 @@
 
     <p>Paste your thread dump here:</p>
     <p>
-      <textarea cols="115" rows="10" id="TEXTAREA" autofocus></textarea>
+      <textarea cols="115" rows="10" id="TEXTAREA"></textarea>
       <br/>
       <input type="submit" value="Analyze" onclick="analyzeTextfield();">
       <input type="submit" value="Clear" onclick="clearTextfield();">
@@ -40,6 +40,8 @@
     </p>
     <p>This page is client-side only, and no data will leave your
       computer when you click Analyze.</p>
+
+    <textarea cols="115" rows="1" id="threadFilter" autofocus></textarea>
 
     <div id="GENERATED_JSON"></div>
     <div id="svgcontainer"></div>

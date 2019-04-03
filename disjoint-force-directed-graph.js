@@ -30,9 +30,14 @@ genrateD3Graph = (graphJson) => {
 
   color = () => {
     const scale = d3.scaleOrdinal(d3.schemeCategory10);
+    const currentFilter = document.getElementById("threadFilter").value
 
-    // red are threads, blue are locks
-    return d => d.group == THREAD_ID ? "#FF0000" : "#002bff"
+    if (currentFilter)  {
+      return d => d.group == THREAD_ID ? (d.name.includes(currentFilter) ? "#FF0000" : "#888888") : "#002bff"
+    } else {
+      // red are threads, blue are locks
+      return d => d.group == THREAD_ID ? "#FF0000" : "#002bff"
+    }
   }
 
   height = 680
@@ -85,6 +90,20 @@ genrateD3Graph = (graphJson) => {
           }
         });
 
+    node.append("objectId")
+        .text(d => d.object_id);
+
+    node.append("name")
+        .text(d => d.group == THREAD_ID ? d.name : d.classname);
+
+    onTextAreaChange = () => {
+      node
+          .attr("fill", color());
+    }
+
+    document.getElementById("threadFilter").onchange = onTextAreaChange
+    document.getElementById("threadFilter").onkeyup = onTextAreaChange
+
     simulation.on("tick", () => {
       link
           .attr("x1", d => d.source.x)
@@ -94,7 +113,7 @@ genrateD3Graph = (graphJson) => {
 
       node
           .attr("cx", d => d.x)
-          .attr("cy", d => d.y);
+          .attr("cy", d => d.y)
     });
   }
 
