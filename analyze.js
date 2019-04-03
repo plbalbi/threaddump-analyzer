@@ -66,6 +66,7 @@ function generateJson(analyzer) {
         return {
             id: THREAD_ID + thread.tid,
             group : THREAD_ID,
+            object_id: thread.tid,
             frames: thread.frames,
             name: thread.name
         }
@@ -76,6 +77,7 @@ function generateJson(analyzer) {
         return {
             id: SYNC_ID + sync._id,
             group: SYNC_ID,
+            object_id: sync._id,
             classname: sync._className
         }
     }))

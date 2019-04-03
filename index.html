@@ -24,6 +24,8 @@
 
   <body>
     <script src="analyze.js" type="text/javascript"></script>
+    <script src="lib/d3.min.js"></script>
+    <script src="disjoint-force-directed-graph.js" type="text/javascript"></script>
 
     <h1>Online Java Thread Dump Analyzer</h1>
 
@@ -33,10 +35,14 @@
       <br/>
       <input type="submit" value="Analyze" onclick="analyzeTextfield();">
       <input type="submit" value="Clear" onclick="clearTextfield();">
-      <input type="file" value="Analyze file" id="FILE" onchange="analyzeFile();">
+      <input type="submit" value="D3 test" onclick="genrateD3Graph();">
+      <input type="file" value="Analyze file" id="FILE" onchange="analyzeFileAndGetJson();">
     </p>
     <p>This page is client-side only, and no data will leave your
       computer when you click Analyze.</p>
+
+    <div id="GENERATED_JSON"></div>
+    <div id="svgcontainer"></div>
 
     <div id="RUNNING_DIV" style="display: none;">
       <hr/>
