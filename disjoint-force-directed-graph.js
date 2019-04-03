@@ -1,18 +1,26 @@
 updateRunningProcesses = () => {
   // clean previous options
+  console.log("Fetching processes running")
+
   var runningProcessesSelectBox = d3.select("#runningProcesses")
   runningProcessesSelectBox.selectAll("option").remove()
-  var runningProcesses = d3.json("http://localhost:3000/processes")
-  runningProcesses.forEach(process => {
-    runningProcessesSelectBox
-      .append("input")
-      .attr("value", process.pid)
-      .text(process.name)
-  })
+
+  fetch("http://localhost:3000/processes")
+    .then(response => response.json())
+    .then(processes => {
+      processes.forEach(process =>
+        runningProcessesSelectBox
+          .append("option")
+          .attr("value", process.pid)
+          .text(process.name)
+      )
+    })
 }
 
 
-genrateD3Graph = (graphJson) => {
+generateD3Graph = (graphJson) => {
+  // delete previous graphs
+  d3.select("#svgcontainer").selectAll("svg").remove()
 
   const THREAD_ID = "THREAD"
   const SYNC_ID = "SYNC"

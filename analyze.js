@@ -37,6 +37,15 @@ function analyzeFile() { // eslint-disable-line no-unused-vars
     }
 }
 
+analyzeLocalProcess = () => {
+    var selectInput = document.getElementById("runningProcesses")
+    var selectedIndex = selectInput.selectedIndex
+    var selectionValue = selectInput.options[selectedIndex].value
+    fetch("http://localhost:3000/threaddump/" + selectionValue)
+            .then(response => response.text())
+            .then(threaddumpAsText => generateD3Graph(generateJson(new Analyzer(threaddumpAsText))))
+}
+
 function analyzeFileAndGetJson() {
     var fileNode = document.getElementById("FILE");
     if (fileNode.files.length > 0) {
@@ -45,7 +54,7 @@ function analyzeFileAndGetJson() {
         fileReader.readAsText(file);
         fileReader.onloadend = function(){
             var text = fileReader.result;
-            genrateD3Graph(generateJson(new Analyzer(text)))
+            generateD3Graph(generateJson(new Analyzer(text)))
         };
     }
 }
