@@ -1,3 +1,17 @@
+updateRunningProcesses = () => {
+  // clean previous options
+  var runningProcessesSelectBox = d3.select("#runningProcesses")
+  runningProcessesSelectBox.selectAll("option").remove()
+  var runningProcesses = d3.json("http://localhost:3000/processes")
+  runningProcesses.forEach(process => {
+    runningProcessesSelectBox
+      .append("input")
+      .attr("value", process.pid)
+      .text(process.name)
+  })
+}
+
+
 genrateD3Graph = (graphJson) => {
 
   const THREAD_ID = "THREAD"
