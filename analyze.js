@@ -37,6 +37,86 @@ function analyzeFile() { // eslint-disable-line no-unused-vars
     }
 }
 
+function analyzeFileAndGetJson() {
+    var fileNode = document.getElementById("FILE");
+    if (fileNode.files.length > 0) {
+        var file = fileNode.files[0];
+        var fileReader = new FileReader();
+        fileReader.readAsText(file);
+        fileReader.onloadend = function(){
+            var text = fileReader.result;
+            document.getElementById("GENERATED_JSON").innerHTML = generateJson(new Analyzer(text)).toString()
+        };
+    }
+}
+
+function analyzeAndGetAnalyzer() {
+    var text = document.getElementById("TEXTAREA").value;
+    return new Analyzer(text)
+}
+
+function generateJson(analyzer) {
+    const THREAD_ID = "THREAD"
+    const SYNC_ID = "SYNC"
+    const threads = analyzer.threads
+    const syncs = analyzer._synchronizers
+
+    // Add thread nodes
+    nodes = threads.map(function(thread) {
+        return {
+            id: THREAD_ID + thread.tid,
+            group : THREAD_ID,
+            frames: thread.frames,
+            name: thread.name
+        }
+    })
+
+    // Add sync nodes
+    nodes = nodes.concat(syncs.map(function(sync) {
+        return {
+            id: SYNC_ID + sync._id,
+            group: SYNC_ID,
+            classname: sync._className
+        }
+    }))
+
+    // Syncs held by thread
+    links = threads.map(function(thread) {
+        const threadId = thread.tid
+        return thread.locksHeld.map(lockId => {
+            return {
+                source: SYNC_ID + lockId,
+                target: THREAD_ID + threadId
+            }
+        })
+    })
+
+    // Add syncs wanting to be acquired or waiting notification on
+    links = links.concat(threads.map(function(thread) {
+        if (thread.wantNotificationOn || thread.wantToAcquire) {
+            var validSync = thread.wantNotificationOn ? thread.wantNotificationOn : thread.wantToAcquire
+            if (!syncs.some(sync => sync._id == validSync)) {
+                console.error("Sync " + validSync + " is not defined in the found syncs")
+                return []
+            }
+            return [{
+                source: THREAD_ID + thread.tid,
+                target: SYNC_ID + validSync
+            }]
+        } else {
+            return []
+        }
+    }))
+
+    // flatten links array
+    links = Array.prototype.concat.apply([], links)
+
+    return JSON.stringify({
+        nodes: nodes,
+        links: links
+    })
+}
+
 
 function analyze(text) {
     var analyzer = new Analyzer(text);
