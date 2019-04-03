@@ -77,6 +77,7 @@ genrateD3Graph = (graphJson) => {
       .join("circle")
         .attr("r", 5)
         .attr("fill", color())
+        .attr("id", node => node.id)
         .call(drag(simulation));
 
     node.append("title")
@@ -95,6 +96,15 @@ genrateD3Graph = (graphJson) => {
 
     node.append("name")
         .text(d => d.group == THREAD_ID ? d.name : d.classname);
+
+    node.on("click", node => {
+          if (d3.event.currentTarget.id.includes(THREAD_ID)) {
+            var currentThread = data.nodes.find(node => node.id == d3.event.currentTarget.id)
+            var stacktrace = currentThread.name + " (" + currentThread.object_id + ")" + "\n\n"
+            stacktrace = String.prototype.concat.apply(stacktrace, currentThread.frames.map(frame => frame + "\n"))
+            document.getElementById("stacktrace").innerHTML = stacktrace
+          }
+        })
 
     onTextAreaChange = () => {
       node
