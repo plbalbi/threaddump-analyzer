@@ -83,13 +83,26 @@ generateD3Graph = (graphJson) => {
         .attr("width", "1000px")
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
+
+    svg.append("svg:defs").append("svg:marker")
+        .attr("id", "arrow")
+        .attr("viewBox", "0 -5 10 10")
+        .attr('refX', 26)//so that it comes towards the center.
+        .attr("markerWidth", 5)
+        .attr("markerHeight", 5)
+        .attr("orient", "auto")
+      .append("svg:path")
+        .attr("d", "M0,-5L10,0L0,5");
+    
+
     const link = svg.append("g")
         .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
       .selectAll("line")
       .data(links)
       .join("line")
-        .attr("stroke-width", d => Math.sqrt(d.value));
+        .attr("stroke-width", .6) 
+        .attr("marker-end", "url(#arrow)");
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
