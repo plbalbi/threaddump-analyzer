@@ -17,6 +17,7 @@ updateRunningProcesses = () => {
     })
 }
 
+var lastSelectedNode = null
 
 generateD3Graph = (graphJson) => {
   // delete previous graphs
@@ -132,8 +133,16 @@ generateD3Graph = (graphJson) => {
     node.append("name")
         .text(d => d.group == THREAD_ID ? d.name : d.classname);
 
-    node.on("click", node => {
+    node.on("click", (d,i,g) => {
           if (d3.event.currentTarget.id.includes(THREAD_ID)) {
+            // https://stackoverflow.com/questions/25123003/how-to-assign-click-event-to-every-svg-element-in-d3js
+            if (lastSelectedNode) {
+              d3.select(lastSelectedNode)
+                .attr("fill", color());
+            }
+            lastSelectedNode = g[i]
+            d3.select(lastSelectedNode)
+              .attr("fill","#F1BC50")
             var currentThread = data.nodes.find(node => node.id == d3.event.currentTarget.id)
             var stacktrace = currentThread.name + " (" + currentThread.object_id + ")" + "\n\n"
             stacktrace = String.prototype.concat.apply(stacktrace, currentThread.frames.map(frame => frame + "\n"))
