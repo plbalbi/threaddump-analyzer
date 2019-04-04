@@ -148,6 +148,8 @@ generateD3Graph = (graphJson) => {
             stacktrace = String.prototype.concat.apply(stacktrace, currentThread.frames.map(frame => frame + "\n"))
             document.getElementById("stacktrace").innerHTML = stacktrace
           }
+          // stop event from propagating to svg
+          d3.event.stopPropagation()
         })
 
     onTextAreaChange = () => {
@@ -169,6 +171,14 @@ generateD3Graph = (graphJson) => {
           .attr("cx", d => d.x)
           .attr("cy", d => d.y)
     });
+
+    svg.on("click", (d,i,g) => {
+      // clear last selected node
+      d3.select(lastSelectedNode)
+        .attr("fill", color());
+      // clear stacktrace
+      document.getElementById("stacktrace").innerHTML = "";
+    })
   }
 
   chart()
