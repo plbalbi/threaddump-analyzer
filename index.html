@@ -34,14 +34,8 @@
 
     <h1>Online Java Thread Dump Analyzer</h1>
 
-    <p>Paste your thread dump here:</p>
     <p>
-      <textarea cols="115" rows="10" id="TEXTAREA"></textarea>
-      <br/>
-      <input type="submit" value="Analyze" onclick="analyzeTextfield();">
       <input type="submit" value="Analyze local process" onclick="analyzeLocalProcess();">
-      <input type="submit" value="Clear" onclick="clearTextfield();">
-      <input type="submit" value="D3 test" onclick="genrateD3Graph();">
       <input type="file" value="Analyze file" id="FILE" onchange="analyzeFileAndGetJson();">
       <select id="runningProcesses" onclick="updateRunningProcesses();">
       </p>
@@ -91,13 +85,5 @@
       </table>
       <p><a href="https://github.com/spotify/threaddump-analyzer/issues/new">Report a bug</a></p>
     </div>
-
-    <hr/>
-    <p><a href="http://github.com/spotify/threaddump-analyzer">
-        Source code on Github</a></p>
-    <p><a href="https://github.com/spotify/threaddump-analyzer/blob/gh-pages/README.md#todo">
-        TODO list on Github</a></p>
-    <p><a href="test.html">
-        Run the test suite in your browser</a></p>
   </body>
 </html>
