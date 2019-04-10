@@ -47,6 +47,8 @@ function analyze(text) {
     threadDumpReloaded = true;
     currentAnalyzer = analyzer;
 
+    document.getElementById("captureDateTime").innerHTML = currentAnalyzer.createdDateTime
+
     setHtml("OUTPUT", analyzer.toHtml());
 
     var ignores = analyzer.toIgnoresHtml();
@@ -652,6 +654,9 @@ function Analyzer(text) {
         var lines = text.split("\n");
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
+            if (i == 0) {
+                this.createdDateTime = line
+            }
             while (this._isIncompleteThreadHeader(line)) {
                 // Multi line thread name
                 i++;
