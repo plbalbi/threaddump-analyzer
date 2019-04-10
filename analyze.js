@@ -16,6 +16,7 @@ limitations under the License.
 
 var EMPTY_STACK = "	<empty stack>";
 var generatedIdCounter = 1;
+var currentAnalyzer = null;
 
 // This method is called from HTML
 function analyzeTextfield() {
@@ -40,6 +41,10 @@ function analyzeFile() { // eslint-disable-line no-unused-vars
 
 function analyze(text) {
     var analyzer = new Analyzer(text);
+
+    // Save current analyzer in browser js context
+    currentAnalyzer = analyzer;
+
     setHtml("OUTPUT", analyzer.toHtml());
 
     var ignores = analyzer.toIgnoresHtml();
