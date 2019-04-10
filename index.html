@@ -114,6 +114,16 @@
       document.getElementById("threadRegexFilter").onchange = filterThreads
       document.getElementById("threadRegexFilter").onkeyup = filterThreads
 
+      // Default listeners
+      d3.select("#RUNNING_HEADER").on("click", ()=>{
+        var currentStyle = d3.select("table#RUNNING").style("display")
+        // By default check if it's not displayed
+        if (currentStyle == "none") {
+          d3.select("table#RUNNING").style("display","block")
+        } else {
+          d3.select("table#RUNNING").style("display","none")
+        }
+      })
     </script>
   </body>
 </html>
