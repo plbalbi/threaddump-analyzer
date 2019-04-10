@@ -17,6 +17,7 @@ limitations under the License.
 var EMPTY_STACK = "	<empty stack>";
 var generatedIdCounter = 1;
 var currentAnalyzer = null;
+var threadDumpReloaded = false;
 
 // This method is called from HTML
 function analyzeTextfield() {
@@ -43,6 +44,7 @@ function analyze(text) {
     var analyzer = new Analyzer(text);
 
     // Save current analyzer in browser js context
+    threadDumpReloaded = true;
     currentAnalyzer = analyzer;
 
     setHtml("OUTPUT", analyzer.toHtml());
@@ -60,6 +62,10 @@ function analyze(text) {
     runningHeader.innerHTML = "Top Methods From " +
         analyzer.countedRunningMethods.length +
         " Running Threads";
+
+    // Make some kind of afterAnalyzeCallbackRegister
+    // eslint-disable-next-line no-undef
+    filterThreads()
 }
 
 // This method is called from HTML so we need to tell ESLint it's not unused

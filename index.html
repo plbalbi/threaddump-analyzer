@@ -85,11 +85,29 @@
 
       filterThreads = () => {
 
+        if (!currentAnalyzer) {
+          return;
+        }
+        
+        if (threadDumpReloaded) {
+          lastNonMatchingThreads = []
+          threadDumpReloaded = false
+        }
+
         lastNonMatchingThreads.forEach(tidNotMatching => {
           d3.select(d3.select("#" + getThreadDivId(tidNotMatching)).node().parentNode).style("display","block")
         })
 
-        currentThreadFilter = new RegExp(document.getElementById("threadRegexFilter").value)
+        try {
+          var currentExpression = document.getElementById("threadRegexFilter").value
+          currentThreadFilter = new RegExp(currentExpression)
+        } catch(err) {
+          if (err instanceof SyntaxError) {
+            console.error("The RegExp expression '" + currentExpression + "' is not valid")
+            return;
+          }
+        }
+
         lastNonMatchingThreads = currentAnalyzer.threads.filter(thread => !currentThreadFilter.test(thread.name)).map(thread => thread.tid)
 
         // Show only matching threadgroups
