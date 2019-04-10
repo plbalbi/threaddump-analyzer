@@ -23,16 +23,17 @@
   </head>
 
   <body>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="analyze.js" type="text/javascript"></script>
-
     <h1>Online Java Thread Dump Analyzer</h1>
 
     <p>Paste your thread dump here:</p>
     <p>
-      <textarea cols="115" rows="10" id="TEXTAREA" autofocus></textarea>
+      <textarea cols="115" rows="3" id="threadRegexFilter" autofocus></textarea>
       <br/>
       <input type="submit" value="Analyze" onclick="analyzeTextfield();">
       <input type="submit" value="Clear" onclick="clearTextfield();">
+      <input type="submit" value="Filter" onclick="filterThreads();">
       <input type="file" value="Analyze file" id="FILE" onchange="analyzeFile();">
     </p>
     <p>This page is client-side only, and no data will leave your
@@ -79,5 +80,40 @@
         TODO list on Github</a></p>
     <p><a href="test.html">
         Run the test suite in your browser</a></p>
+
+    <script type="text/javascript">
+
+      var currentThreadFilter = null
+      var lastNonMatchingThreads = []
+
+      const getThreadDivId = (tid) => "thread-" + tid
+
+      filterThreads = () => {
+
+        lastNonMatchingThreads.forEach(tidNotMatching => {
+          d3.select(d3.select("#" + getThreadDivId(tidNotMatching)).node().parentNode).style("display","block")
+        })
+
+        currentThreadFilter = new RegExp(document.getElementById("threadRegexFilter").value)
+        lastNonMatchingThreads = currentAnalyzer.threads.filter(thread => !currentThreadFilter.test(thread.name)).map(thread => thread.tid)
+
+        // Show only matching threadgroups
+        lastNonMatchingThreads.forEach(tidNotMatching => {
+          try{
+            var divId = "#" + getThreadDivId(tidNotMatching)
+            var threadGroupNode = d3.select(divId).node().parentNode
+            if (threadGroupNode) {
+              d3.select(threadGroupNode).style("display","none")
+            }
+          } catch(err) {
+            console.error("Did not find thread-div-element with tid: " + tidNotMatching)
+          }
+        })
+      }
+
+      document.getElementById("threadRegexFilter").onchange = filterThreads
+      document.getElementById("threadRegexFilter").onkeyup = filterThreads
+
+    </script>
   </body>
 </html>
