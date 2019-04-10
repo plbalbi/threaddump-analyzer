@@ -82,6 +82,23 @@
       var lastNonMatchingThreads = []
 
       const getThreadDivId = (tid) => "thread-" + tid
+      const DISPLAY_NONE = "none"
+      const DISPLAY_BLOCK = "block"
+
+      setDisplayForTidsTo = (tids, displayValue) => {
+          // Show only matching threadgroups
+          tids.forEach(tidNotMatching => {
+            try{
+              var divId = "#" + getThreadDivId(tidNotMatching)
+              var threadGroupNode = d3.select(divId).node().parentNode
+              if (threadGroupNode) {
+                d3.select(threadGroupNode).style("display",displayValue)
+              }
+            } catch(err) {
+              console.error("Did not find thread-div-element with tid: " + tidNotMatching)
+            }
+          })
+        }
 
       filterThreads = () => {
 
@@ -109,34 +126,28 @@
         }
 
         lastNonMatchingThreads = currentAnalyzer.threads.filter(thread => !currentThreadFilter.test(thread.name)).map(thread => thread.tid)
+        lastMatchingThreads = currentAnalyzer.threads.filter(thread => currentThreadFilter.test(thread.name)).map(thread => thread.tid)
 
         // Show only matching threadgroups
-        lastNonMatchingThreads.forEach(tidNotMatching => {
-          try{
-            var divId = "#" + getThreadDivId(tidNotMatching)
-            var threadGroupNode = d3.select(divId).node().parentNode
-            if (threadGroupNode) {
-              d3.select(threadGroupNode).style("display","none")
-            }
-          } catch(err) {
-            console.error("Did not find thread-div-element with tid: " + tidNotMatching)
+        setDisplayForTidsTo(lastNonMatchingThreads, DISPLAY_NONE)
+        // In case some threadgroup contains also non-display-threads, override that last
+        setDisplayForTidsTo(lastMatchingThreads, DISPLAY_BLOCK)
+
+        document.getElementById("threadRegexFilter").onchange = filterThreads
+        document.getElementById("threadRegexFilter").onkeyup = filterThreads
+
+        // Default listeners
+        d3.select("#RUNNING_HEADER").on("click", ()=>{
+          var currentStyle = d3.select("table#RUNNING").style("display")
+          // By default check if it's not displayed
+          if (currentStyle == "none") {
+            d3.select("table#RUNNING").style("display","block")
+          } else {
+            d3.select("table#RUNNING").style("display","none")
           }
         })
+
       }
-
-      document.getElementById("threadRegexFilter").onchange = filterThreads
-      document.getElementById("threadRegexFilter").onkeyup = filterThreads
-
-      // Default listeners
-      d3.select("#RUNNING_HEADER").on("click", ()=>{
-        var currentStyle = d3.select("table#RUNNING").style("display")
-        // By default check if it's not displayed
-        if (currentStyle == "none") {
-          d3.select("table#RUNNING").style("display","block")
-        } else {
-          d3.select("table#RUNNING").style("display","none")
-        }
-      })
     </script>
   </body>
 </html>
